@@ -1,4 +1,4 @@
-import {Db, ObjectId} from "mongodb";
+import {MongoClient, Db, ObjectId} from "mongodb";
 
 export interface User {
     fName: string;
@@ -25,7 +25,7 @@ interface UsersControllers {
     CreateUser: CreateUser
 }
 
-export const Users = (db:Db): UsersControllers => {
+const Users = (db:Db): UsersControllers => {
     const CreateUser = async (payload: CreateUserPayload): Promise<UserDocInternal> => {
         const Users = db.collection('Users')
         const userScrubbed: CreateUserPayload = {
@@ -47,3 +47,17 @@ export const Users = (db:Db): UsersControllers => {
         CreateUser
     }
 }
+
+interface DefaultExport {
+    Users: UsersControllers;
+}
+
+const CollectionHandlers = async (dbPromise: Promise<Db>): Promise<DefaultExport> => {
+    const db = await dbPromise
+
+    return {
+        Users: Users(db)
+    }
+}
+
+export default CollectionHandlers
