@@ -7,146 +7,26 @@ export interface User {
     phone: string;
 }
 
-export interface UserDocInternal extends User {
-    _id: string;
+export type CustomUser<T extends {}> = T & User
+
+export interface UserDoc extends User {
+    _id : ObjectId |string;
+}
+
+export type CustomUserDoc<T extends {}> = T & UserDoc
+
+export interface UserInternalDoc extends UserDoc {
     password: string;
 }
 
-export interface SuccessfulLoginResult {
-    user: User;
-    events: (AggBaseEvent) [],
-    organizations: OrganizationDoc []
-    token: string;
-}
+export type CustomUserInternalDoc<T extends {}> = T & UserInternalDoc
 
-export interface CreateUserPayload extends User {
-    _id?: ObjectId;
-    password: string;
-}
-
-export interface UserSpaceHolder {
-    email: string;
-    _id: string | ObjectId;
-    notJoined: true;
-}
-
-export interface TokenPayload {
-    user_id: string;
-}
-
-export interface EventTokenPayload extends TokenPayload {
-    event_id: string;
-}
-
-export interface NewEventBody {
-    token?: string;
-    new_user?: CreateUserPayload;
-    event: BaseEventRaw;
-    organization?: Organization;
-    organization_id?: string
-}
-
-export interface BaseEventRaw {
-    type: EventType
-    name: string;
-    description: string;
-    start_date: string;
-    is_private: string | boolean;
-    is_searchable: string | boolean;
-    keywords: string [];
-    pic_urls: string [];
-    contacts: Contacts [];
-    goal_amount: string;
-}
-
-export interface BaseEvent extends BaseEventRaw {
-    created_by_id: string | ObjectId;
-    organization_id: string | ObjectId;
-    admin_ids: (string | UserDocInternal)[];
-    member_ids: (string | UserDocInternal)[];
-}
-
-export interface AggBaseEvent extends BaseEventRaw {
-    created_by_id: string | ObjectId;
-    organization_id: string | ObjectId;
-    admins: UserDocInternal [];
-    members: UserDocInternal [];
-}
-
-export interface TicketedEventDoc extends BaseEvent {
-    _id: string;
-    address: string;
-    website: string;
-    sponsor_levels: SponsorLevel [];
-    additional_donations: boolean;
-    is_limit: boolean;
-}
-
-export interface FundRaiseEventDoc extends BaseEvent {
-    _id: string;
-    end_date: string;
-    is_prize: boolean;
-    prizes?: Prize [];
-}
-
-interface Prize {
-    description: string;
-    pic_url: string;
-    qty: number;
-}
-
-export enum EventType {
-    Fundraiser = "Fundraiser",
-    Ticketed = "Ticketed"
-}
-
-interface SponsorLevel {
-    name: string;
-    price: string;
-    description: string;
-}
-
-interface Contacts {
-    name: string;
-    email: string;
-    phone: string;
-    title?: string;
-}
-
-export interface Organization {
-    created_by_id: ObjectId;
-    name: string;
-    description: string;
-    address: string;
-    phone: string;
-    website: string;
-    logo_url: string;
-    bank: {
-        name: string;
-        account: string;
-        routing: string;
-    }
-}
-
-export interface OrganizationDoc extends Organization{
-    _id: string | ObjectId ;
-}
-
-export interface UserEventsAndOrgsResponse {
-    events: (AggBaseEvent) [];
-    organizations: OrganizationDoc []
-}
-
-export interface GetUser {
-    (query: {[propName:string]: any}) : Promise<UserDocInternal>
-}
 
 export interface UsersControllers {
-    CreateUser: (payload: CreateUserPayload) => Promise<UserDocInternal>;
-    CreateUserSpaceHolder: (email: string) => Promise<UserSpaceHolder>;
-    GetManyUsers: (user_ids: string []) => Promise<UserDocInternal[]>;
-    GetUserByEmail: (email: string) => Promise<UserDocInternal>;
-    UserExists: (email: string) => Promise<boolean>;
+    CreateUser<P>(payload: CustomUser<P>): Promise<CustomUserDoc<P>>;
+    GetManyUsers<P>(user_ids: string []): Promise<CustomUserDoc<P>[]>;
+    GetUserByEmail<P>(email: string): Promise<CustomUserInternalDoc<P>>;
+    UserExists(email: string): Promise<boolean>;
 }
 
 export interface DefaultExport {
