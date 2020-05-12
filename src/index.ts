@@ -10,9 +10,16 @@ const Users = (db:Db): UsersControllers => {
 
     async function CreateUser<P>(payload:CustomUser<P>): Promise<CustomUserDoc<P>>  {
         const Users = db.collection('Users')
-        const response = await Users.insertOne(payload)
-        const result = {
+        const userScrubbed: CustomUser<P> = {
             ...payload,
+            fName: payload.fName.toLowerCase(),
+            lName: payload.lName.toLowerCase(),
+            email: payload.email.toLowerCase(),
+            phone: payload.phone
+        }
+        const response = await Users.insertOne(userScrubbed)
+        const result = {
+            ...userScrubbed,
             _id: response.insertedId
         }
         return result
