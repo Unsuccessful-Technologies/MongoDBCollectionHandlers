@@ -25,9 +25,14 @@ const Users = (db:Db): UsersControllers => {
         return result
     }
 
-    async function GetUser<P>(query: {[propName:string]: any}): Promise<CustomUserDoc<P>> {
+    async function GetUser<P>(query: {[propName:string]: any}, pipeline?: Object []): Promise<CustomUserDoc<P>> {
         const Users = db.collection('Users')
-        return await Users.findOne(query)
+        if(!pipeline){
+            return await Users.findOne(query)
+        } else {
+            const ResultArr: CustomUserDoc<P>[] = await Users.aggregate<CustomUserDoc<P>>(pipeline).toArray()
+            return ResultArr[0]
+        }
     }
 
     async function GetManyUsers<P> (user_ids: string []): Promise<P[]> {
@@ -37,9 +42,9 @@ const Users = (db:Db): UsersControllers => {
         return await Users.find(query, {projection: {password: -1}}).toArray()
     }
 
-    async function GetUserByEmail<P>(email: string): Promise<P> {
+    async function GetUserByEmail<P>(email: string, pipeline?: Object[]): Promise<P> {
         const query = {email: email.toLowerCase()}
-        return GetUser(query)
+        return GetUser(query, pipeline)
     }
 
     async function UserExists(email: string): Promise<boolean> {

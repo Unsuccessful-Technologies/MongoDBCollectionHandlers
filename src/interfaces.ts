@@ -25,7 +25,7 @@ export type CustomUserInternalDoc<T extends {}> = T & UserInternalDoc
 export interface UsersControllers {
     CreateUser<P>(payload: CustomUser<P>): Promise<CustomUserDoc<P>>;
     GetManyUsers<P>(user_ids: string []): Promise<CustomUserDoc<P>[]>;
-    GetUserByEmail<P>(email: string): Promise<CustomUserInternalDoc<P>>;
+    GetUserByEmail<P>(email: string, pipeline?: Object []): Promise<CustomUserInternalDoc<P>>;
     UserExists(email: string): Promise<boolean>;
 }
 
