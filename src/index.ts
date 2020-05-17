@@ -63,6 +63,7 @@ const Users = (db:Db): UsersControllers => {
         CreateUser,
         GetManyUsers,
         GetUserByEmail,
+        GetUserById,
         UserExists
     }
 }
