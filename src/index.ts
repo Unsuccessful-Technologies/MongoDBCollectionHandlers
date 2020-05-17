@@ -47,6 +47,11 @@ const Users = (db:Db): UsersControllers => {
         return GetUser(query, pipeline)
     }
 
+    async function GetUserById<P>(_id: string, pipeline?: Object[]): Promise<P> {
+        const query = {_id: new ObjectId(_id)}
+        return GetUser(query, pipeline)
+    }
+
     async function UserExists(email: string): Promise<boolean> {
         let result = true
         let user = await GetUserByEmail(email)

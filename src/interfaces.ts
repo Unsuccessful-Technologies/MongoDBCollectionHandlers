@@ -26,6 +26,7 @@ export interface UsersControllers {
     CreateUser<P>(payload: CustomUser<P>): Promise<CustomUserDoc<P>>;
     GetManyUsers<P>(user_ids: string []): Promise<CustomUserDoc<P>[]>;
     GetUserByEmail<P>(email: string, pipeline?: Object []): Promise<CustomUserInternalDoc<P>>;
+    GetUserById<P>(_id: string, pipeline?: Object []): Promise<CustomUserInternalDoc<P>>
     UserExists(email: string): Promise<boolean>;
 }
 
